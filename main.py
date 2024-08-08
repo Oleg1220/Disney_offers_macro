@@ -30,18 +30,17 @@ creative_id_range = reports_sheet.range('C:C').value
 totalads_range = reports_sheet.range('D:D').value
 
 # First sheet paste
-campaign_values = [[item] for item in campaign_range]
-adconcept_values = [[item] for item in adConcept_range]
-creative_doc_values = [[item] for item in creative_doc_range]
-start_values = [[item] for item in start_range]
-end_values = [[item] for item in end_range]
+campaign_values = [[item] for item in campaign_range if item is not None]
+adconcept_values = [[item] for item in adConcept_range if item is not None]
+creative_doc_values = [[item] for item in creative_doc_range if item is not None]
+start_values = [[item] for item in start_range if item is not None]
+end_values = [[item] for item in end_range if item is not None]
 
 # Second sheet paste
-date_values = [[item] for item in date_range]
-creative_values = [[item] for item in creative_range]
-creative_id_values = [[item] for item in creative_id_range]
-total_ads_values = [[item] for item in totalads_range]
-
+date_values = [[item] for item in date_range if item is not None]
+creative_values = [[item] for item in creative_range if item is not None]
+creative_id_values = [[item] for item in creative_id_range if item is not None]
+total_ads_values = [[item] for item in totalads_range if item is not None]
 
 
 # eto yung nag papaste
@@ -63,7 +62,7 @@ try:
 
     # Macro Run
     macro = third_book.macro('Module1.GenerateDisneyReports')
-    macro()  # Call the macro
+    macro()
     print("Running macro")
 
     print("Finished Macro")
