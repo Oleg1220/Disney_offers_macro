@@ -1,8 +1,8 @@
 import xlwings as xw
+import csv
 
 # Indicate start of process
 print("Start")
-
 
 # Open the source and target workbooks
 first_book = xw.Book('reports.csv')
@@ -63,34 +63,40 @@ try:
     # Macro Run
     macro = third_book.macro('Module1.GenerateDisneyReports')
     macro()
-    print("Running macro")
+    print("Running first macro")
 
-    print("Finished Macro")
+    print("Finished first macro")
 
 except Exception as e:
     print(f"An error occurred: {e}")
 
 finally:
     try:
-        print("pogi sige na")
-        # third_book.close()
+        print("Finished Running first macro")
     except:
         pass  
 
-    try:
-        xw.apps.active.quit() 
-    except:
-        pass  
+find_maui = 'WDWRES'
 
+search_col = macro_scheduling_doc.range('C:C')
 
-# Save and close the target workbook
-# third_book.save()
+found_rows = []
 
+# Iterate through the column values
+for i, cell_value in enumerate(search_col.value):
+    if cell_value == find_maui:
+        row_range = macro_scheduling_doc.range(f'C{i+1}:E{i+1}')  
+        row_values = row_range.value
+        found_rows.append(row_values)
 
-
-# Optionally, close the source workbook if you're done with it
-# first_book.close()
-# second_book.close()
-
+# Output the found rows
+if found_rows:
+    print(f'Found "{find_maui}" in the following rows:')
+    for row in found_rows:
+        print(row)
+else:
+    print(f'No "{find_maui}" found')
+    
+# print(found_rows)
 
 print("End")
