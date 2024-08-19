@@ -4,11 +4,14 @@ from datetime import datetime
 
 # Indicate start of process
 print("Start")
+
 # Get Current directory
 current_directory = os.getcwd()
 
 
-# Open the source and target workbooks
+##########################################################################################
+# Opening of workbooks
+##########################################################################################
 first_book = xw.Book('reports.csv')
 second_book = xw.Book('Disney Creative Scheduling.xlsx')
 third_book = xw.Book('macro.xlsm')
@@ -32,6 +35,10 @@ date_range = reports_sheet.range('A:A').value
 creative_range = reports_sheet.range('B:B').value
 creative_id_range = reports_sheet.range('C:C').value
 totalads_range = reports_sheet.range('D:D').value
+
+##########################################################################################
+# Values loop
+##########################################################################################
 
 # First sheet paste
 campaign_values = [[item] for item in campaign_range if item is not None]
