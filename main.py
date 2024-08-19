@@ -14,7 +14,7 @@ current_directory = os.getcwd()
 ##########################################################################################
 first_book = xw.Book('reports.csv')
 second_book = xw.Book('Disney Creative Scheduling.xlsx')
-third_book = xw.Book('macro.xlsm')
+third_book = xw.Book('Disney_CreativeQA_Macro[1].xlsm')
 
 # Access the sheets from the workbooks
 scheduling_doc = second_book.sheets['FY24_Disney_Creative']
@@ -149,6 +149,49 @@ finally:
         print("Finished Running Second macro")
     except:
         pass  
+    
+    
+##########################################################################################
+# Cleaning the report
+##########################################################################################
 
+print("Cleaning the report")
+def rgb_to_excel_color(r, g, b):
+    return (r << 16) + (g << 8) + b
+
+r, g, b = 0, 255, 255 
+color_rgb = rgb_to_excel_color(r, g, b)
+
+output_report = xw.Book(formatted_date + "_Creative_QA_Report.xlsx")
+
+# Define the range to search within (e.g., the used range of the sheet)
+
+RemoveRotation = output_report.sheets['Remove From Rotation']
+ManualChecking = output_report.sheets['Manual Checking Needed']
+
+
+RemoveRotation.range('A1').value = 'There are no creatives (having a minimum of 150 impressions) in rotation past their end dates.'
+ManualChecking.range('A1').value = 'The below creatives have multiple end dates associated with the given MAUI code and job number.'
+
+used_range = RemoveRotation.range('G3').current_region 
+# Iterate over each cell in the range
+for cell in used_range:
+    if isinstance(cell.value, (int, float)) and cell.value >= 150:
+        cell.api.Interior.Color = color_rgb 
+
+
+##########################################################################################
+# Finishing up
+##########################################################################################
+first_book.close()
+second_book.close()
+
+# Save and close the target workbook
+third_book.save()
+output_report.save()
+
+#close all workbook
+third_book.close()
+output_report.close()
 
 print("End")

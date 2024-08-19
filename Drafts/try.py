@@ -2,30 +2,25 @@ import os
 import xlwings as xw
 from datetime import datetime
 
-first_book = xw.Book('reports.csv')
-second_book = xw.Book('Disney Creative Scheduling.xlsx')
-third_book = xw.Book('macro.xlsm')
-
 # Access the sheets from the workbooks
-scheduling_doc = second_book.sheets['FY24_Disney_Creative']
-reports_sheet = first_book.sheets['reports']
-macro_scheduling_doc = third_book.sheets['GOOGLE DOCS HERE']
-macro_reports = third_book.sheets['CREATIVE CHECK DAILY RPT HERE']
 
-search_items = ['WDWRES', 'ITEM2', 'ITEM3']  # Replace with your items
-
-search_col = macro_scheduling_doc.range('C:C')
-
-# Get the current date
 now = datetime.now()
 formatted_date = now.strftime('%m.%d.%Y')
 
+def rgb_to_excel_color(r, g, b):
+    return (r << 16) + (g << 8) + b
 
-print(f'Current Date: {formatted_date}')
+r, g, b = 0, 255, 255 
+color_rgb = rgb_to_excel_color(r, g, b)
 
-current_directory = os.getcwd()
-macro_page = third_book.sheets['GENERATE REPORTS']
-macro_page.range('B10').value = current_directory
-macro_page.range('I10').value = formatted_date + "_Creative_QA_Report"
+output_report = xw.Book(formatted_date + "_Creative_QA_Report.xlsx")
 
+# Define the range to search within (e.g., the used range of the sheet)
 
+reports_sheet = output_report.sheets['Remove From Rotation']
+used_range = reports_sheet.range('G3').current_region 
+
+# Iterate over each cell in the range
+for cell in used_range:
+    if isinstance(cell.value, (int, float)) and cell.value >= 150:
+        cell.api.Interior.Color = color_rgb 
