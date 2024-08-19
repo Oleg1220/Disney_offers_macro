@@ -1,8 +1,12 @@
+import os
 import xlwings as xw
-import csv
+from datetime import datetime
 
 # Indicate start of process
 print("Start")
+# Get Current directory
+current_directory = os.getcwd()
+
 
 # Open the source and target workbooks
 first_book = xw.Book('reports.csv')
@@ -14,7 +18,7 @@ scheduling_doc = second_book.sheets['FY24_Disney_Creative']
 reports_sheet = first_book.sheets['reports']
 macro_scheduling_doc = third_book.sheets['GOOGLE DOCS HERE']
 macro_reports = third_book.sheets['CREATIVE CHECK DAILY RPT HERE']
-
+macro_page = third_book.sheets['GENERATE REPORTS']
 
 # Scheduling Docs Data
 campaign_range = scheduling_doc.range('A:A').value
@@ -43,7 +47,10 @@ creative_id_values = [[item] for item in creative_id_range if item is not None]
 total_ads_values = [[item] for item in totalads_range if item is not None]
 
 
-# eto yung nag papaste
+##########################################################################################
+# Paste values from different sheets
+##########################################################################################
+
 macro_scheduling_doc.range('A1').value = campaign_values
 macro_scheduling_doc.range('B1').value = adconcept_values
 macro_scheduling_doc.range('E1').value = creative_doc_values
@@ -55,6 +62,13 @@ macro_reports.range('B1').value = creative_values
 macro_reports.range('C1').value = creative_id_values
 macro_reports.range('D1').value = total_ads_values
 
+# Change Directory to current directory
+macro_page.range('B10').value = current_directory
+macro_page.range('I10').value = "Pass 1"
+
+##########################################################################################
+# First macro
+##########################################################################################
 
 print("Start Macro")
 
@@ -65,8 +79,6 @@ try:
     macro()
     print("Running first macro")
 
-    print("Finished first macro")
-
 except Exception as e:
     print(f"An error occurred: {e}")
 
@@ -75,28 +87,61 @@ finally:
         print("Finished Running first macro")
     except:
         pass  
+    
+    
+##########################################################################################
+# Replacement of MAUI Codes Start
+##########################################################################################
 
-find_maui = 'WDWRES'
 
+search_items = ['WDWDOM', 'WDWEPCOT', 'WDWFLRES', 'WDWRSTS', 'WDWDHS', 'DSPNGS', 'WDWRES', 'WDWEEC', 'WDWLATAM', 'CONSUMER', '320x50', '0', 'DIQF']
+print("Replacing MAUI CODES")
 search_col = macro_scheduling_doc.range('C:C')
-
-found_rows = []
 
 # Iterate through the column values
 for i, cell_value in enumerate(search_col.value):
-    if cell_value == find_maui:
-        row_range = macro_scheduling_doc.range(f'C{i+1}:E{i+1}')  
-        row_values = row_range.value
-        found_rows.append(row_values)
+    if cell_value in search_items:
+        # Copy command
+        col_e_value = macro_scheduling_doc.range(f'E{i+1}').value
+        
+        # Split Command
+        split_values = col_e_value.split('_')
+        if len(split_values) >= 4: 
+            new_value = split_values[3] #Number 3 kasi pang apat yung maui code sa array
+        else:
+            new_value = ''  # Or handle cases where there are fewer than 4 items
 
-# Output the found rows
-if found_rows:
-    print(f'Found "{find_maui}" in the following rows:')
-    for row in found_rows:
-        print(row)
-else:
-    print(f'No "{find_maui}" found')
-    
-# print(found_rows)
+        # Update column C with the 4th element
+        macro_scheduling_doc.range(f'C{i+1}').value = new_value
+        
+# File path and File name
+now = datetime.now()
+formatted_date = now.strftime('%m.%d.%Y')
+
+##########################################################################################
+# Second macro
+##########################################################################################
+
+
+print(f'Current Date: {formatted_date}')
+
+macro_page.range('I10').value = formatted_date + "_Creative_QA_Report"
+
+try:
+
+    # Macro Run
+    macro = third_book.macro('Module1.GenerateDisneyReports')
+    macro()
+    print("Running Second macro")
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+finally:
+    try:
+        print("Finished Running Second macro")
+    except:
+        pass  
+
 
 print("End")
