@@ -4,7 +4,7 @@ from cx_Freeze import setup, Executable
 # fine tuning.
 build_options = {'packages': ['os','xlwings','datetime'], 'excludes': []}
 
-base = 'console'
+base = 'gui'
 
 executables = [
     Executable('main.py', base=base)
@@ -12,6 +12,6 @@ executables = [
 
 setup(name='Disney Offers Tool',
       version = '1.0',
-      description = 'A one click tool for Disney Offers',
+      description = 'A Disney Offers tool used by Wideout/Media Ocean West Coast',
       options = {'build_exe': build_options},
       executables = executables)
