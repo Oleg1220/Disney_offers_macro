@@ -187,11 +187,9 @@ first_book.close()
 second_book.close()
 
 # Save and close the target workbook
-third_book.save()
 output_report.save()
 
 #close all workbook
-third_book.close()
 output_report.close()
 
 print("End")
