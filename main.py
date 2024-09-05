@@ -154,30 +154,41 @@ finally:
 ##########################################################################################
 # Cleaning the report
 ##########################################################################################
-
 print("Cleaning the report")
+
 def rgb_to_excel_color(r, g, b):
     return (r << 16) + (g << 8) + b
 
-r, g, b = 0, 255, 255 
+# Define colors for highlighting
+highlight_color_less_than_150 = rgb_to_excel_color(255, 0, 0)  # Red for values less than 150
+
+# Define the RGB color for cells with values less than 150
+r, g, b = 0, 255, 255
 color_rgb = rgb_to_excel_color(r, g, b)
 
+# Open the Excel workbook
 output_report = xw.Book(formatted_date + "_Creative_QA_Report.xlsx")
 
-# Define the range to search within (e.g., the used range of the sheet)
-
+# Define the sheets
 RemoveRotation = output_report.sheets['Remove From Rotation']
 ManualChecking = output_report.sheets['Manual Checking Needed']
 
-
+# Update cell values in sheets
 RemoveRotation.range('A1').value = 'There are no creatives (having a minimum of 150 impressions) in rotation past their end dates.'
 ManualChecking.range('A1').value = 'The below creatives have multiple end dates associated with the given MAUI code and job number.'
 
-used_range = RemoveRotation.range('G3').current_region 
+# Define the range to search within (e.g., the used range of the sheet)
+used_range = RemoveRotation.range('G3').current_region
+
 # Iterate over each cell in the range
 for cell in used_range:
-    if isinstance(cell.value, (int, float)) and cell.value >= 150:
-        cell.api.Interior.Color = color_rgb 
+    if isinstance(cell.value, (int, float)):
+        if cell.value <= 150:
+            cell.api.Interior.Color = highlight_color_less_than_or_equal_to_150
+    # If the cell value is greater than 150
+
+print("Report cleaned.")
+
 
 
 ##########################################################################################
@@ -192,4 +203,5 @@ output_report.save()
 #close all workbook
 output_report.close()
 
-print("End")
+print("Program has finished running.")
+input("Press Enter to exit...")uf 

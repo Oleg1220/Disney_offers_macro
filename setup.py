@@ -4,14 +4,16 @@ from cx_Freeze import setup, Executable
 # fine tuning.
 build_options = {'packages': ['os','xlwings','datetime'], 'excludes': []}
 
-base = 'gui'
+base = 'console'
 
 executables = [
     Executable('main.py', base=base)
 ]
 
-setup(name='Disney Offers Tool',
+setup(name='Walt One',
       version = '1.0',
-      description = 'A Disney Offers tool used by Wideout/Media Ocean West Coast',
+      description = 'A tool for Disney Offers QA used by Wideout/Media Ocean West Coast team',
       options = {'build_exe': build_options},
       executables = executables)
+
+# python setup.py build
